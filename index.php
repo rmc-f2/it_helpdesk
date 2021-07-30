@@ -1,4 +1,8 @@
 <?php
+// Comment ni Sir R-Jay
+// Joren please do this task
+// Todo:
+// Get all tickets created / filed by logged in user.
 
 require_once 'models/Users.php';
 require_once 'models/Tickets.php';
