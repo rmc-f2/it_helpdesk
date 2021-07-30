@@ -2,7 +2,8 @@
 // Comment ni Sir R-Jay
 // Joren please do this task
 // Todo:
-// Get all tickets created / filed by logged in user.
+// If logged in user is an ITD, get all assigned tickets
+// Else get all created tickets
 
 require_once 'models/Users.php';
 require_once 'models/Tickets.php';
