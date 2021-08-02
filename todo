@@ -1,0 +1,40 @@
+
+
+Url : /api/login
+Method : POST
+POST Data : [username, password]
+Description : Login action for system user
+Response : JSON user information
+Example :
+
+{
+    user : {
+        firstname: "R-JAY",
+        lastname: "CRUZ",
+        bday: "1994-03-17",
+    }
+}
+
+----------------------------------
+Url : /api/tickets
+Method : GET
+Description : Display all assigned tickets if ITD, else display all created tickets
+Response : JSON
+Example :
+{
+    tickets : {
+        *ticket_no: [
+            category : "F2 System"
+            level: "HIGH",
+            severity : "CRITICAL"
+        ] ,
+        *ticket_no: [
+            category : "F2 System"
+            level: "HIGH",
+            severity : "CRITICAL"
+        ]
+    }
+}
+
+
+Url : /api/

@@ -1,0 +1,35 @@
+
+<body>
+
+        <table id='my_ticket_table'>
+            <thead>
+            <tr>
+                <th>ticket_no</th>
+                <th>email_subject</th>
+                <th>issue_name</th>
+                <th>category</th>
+                <th>originator</th>
+                <th>severity</th>
+                <th>status</th>
+                <th>escalated_to<th>
+                <th>date_escalated</th>
+                <th>date_closed</th>
+            </tr>
+            </thead>
+            <tbody>
+                
+            </tbody>
+        </table>
+
+
+</body>
+<script>
+$('#my_ticket_table').dataTable({
+    processing: true,
+    serverSide: true,
+    "ajax": {
+        "url": "/it_helpdesk/api/tickets",
+        "dataSrc": "tickets"
+    },
+});
+</script>

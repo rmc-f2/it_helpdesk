@@ -1,0 +1,28 @@
+
+
+
+
+        echo "Welcome "."{$user->firstname} {$user->lastname} you have an Access! <br>";
+        if ($escalated) {
+            // If logged in user is an ITD, get all assigned tickets
+            echo "Please resolve all this Tickets as soon as Possible. Thank you. <br>";
+            $tickets = $user->open_tickets;
+            foreach ($tickets as $ticket) {
+                var_dump($ticket->ticket_no);
+                var_dump($ticket->email_subject);
+            }
+        } else {
+            // Else get all created tickets
+            echo "Here/'s All your Ticket Request! <br>";
+            echo "List Example wala pa po ako nilagay kase sa nickel po ginawa ko sample para matest nio po agad pero working po ito sir. :) <br>
+            <html>
+               
+                
+            </html>";
+
+            foreach ($user->tickets as $ticket) {
+                var_dump($ticket->ticket_no);
+                var_dump($ticket->email_subject);
+            }
+
+        }

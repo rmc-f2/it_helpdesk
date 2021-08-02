@@ -48,12 +48,16 @@ $di->set('db_f2nt_itd', function () {
 });
 
 
+// Response variable
+$response = array();
+// Dependecy Injector (App)
 $app = new Micro($di);
+
+
 /*
  * Routes definitions
  */
-
-$app->post('/api/login', function() use ($app) {
+$app->post('/api/login', function() use ($app, $response) {
 
     // Get data from user input
     $username = $app->request->getPost('username');
@@ -61,80 +65,65 @@ $app->post('/api/login', function() use ($app) {
 
     // Search account in database based from user input
     $user = Users::findFirst("username = '{$username}' AND password = '{$password}'");
+
+
     $escalated = Tickets::findFirst("escalated_to = '{$username}'");
     $created = Tickets::find("created_by = '{$username}'");
 
     if($user){
-        echo "Welcome "."{$user->firstname} {$user->lastname} you have an Access! <br>";
-        if ($escalated) {
-            // If logged in user is an ITD, get all assigned tickets
-            echo "Please resolve all this Tickets as soon as Possible. Thank you. <br>";
-            $tickets = $user->open_tickets;
-            foreach ($tickets as $ticket) {
-                var_dump($ticket->ticket_no);
-                var_dump($ticket->email_subject);
-            }
-        } else {
-            // Else get all created tickets
-            echo "Here/'s All your Ticket Request! <br>";
-            echo "List Example wala pa po ako nilagay kase sa nickel po ginawa ko sample para matest nio po agad pero working po ito sir. :) <br>
-            <html>
-                <body>
-                <form>
-                <center>			
-                        <table style='height:20px;  font-size:13px;'>       
-                            <tr>
-                                <th  style='border:1px solid black;width:200px;height:20px;font-weight:bold;' >Ticket No.</th>
-                                <th  style='border:1px solid black;width:200px;height:20px;font-weight:bold;' ><strong>Email Subject</strong></th>
-                                <th  style='border:1px solid black;width:200px;height:20px;font-weight:bold;' >Issue Name</th>
-                                <th  style='border:1px solid black;width:200px;height:20px;font-weight:bold;' ><strong>Category</strong></th>
-                                <th  style='border:1px solid black;width:200px;height:20px;font-weight:bold;' >Origin</th>
-                                <th  style='border:1px solid black;width:200px;height:20px;font-weight:bold;' ><strong>Severity</strong></th>
-                                <th  style='border:1px solid black;width:200px;height:20px;font-weight:bold;' >Status</th>
-                                <th  style='border:1px solid black;width:200px;height:20px;font-weight:bold;' ><strong>Escalated</strong></th>
-                                <th  style='border:1px solid black;width:200px;height:20px;font-weight:bold;' >Date Escalated</th>
-                                <th  style='border:1px solid black;width:200px;height:20px;font-weight:bold;' ><strong>Date Closed</strong></th>
-                                </tr>
-                            
-                    </table><br><br>
+        $response['user'] = $user->toArray();
 
-                </center>
-                </form>
+        $response['assigned_tickets'] = array();
 
-                        
-                </body>	
-            </html>";
-
-            foreach ($user->tickets as $ticket) {
-                var_dump($ticket->ticket_no);
-                var_dump($ticket->email_subject);
-            }
-
+        $tickets = $user->assigned_tickets;
+        foreach ($tickets as $ticket) {
+            $response['assigned_tickets'][$ticket->ticket_no]= $ticket->toArray();
         }
+        echo json_encode($response);
     }
     else{
-        echo "Sorry you don't have an Access, please register first! <br>";
-        //simple linking to Login Page
-        echo "<html>
-            <form method='POST' action='http://localhost/it_helpdesk/index.html'>
-                <input type='submit'/>
-            </form>
-            </html>";
+        echo json_encode(array('message'=>'User not found'));
     }
-    
 
-    
     // foreach($users as $user){
     //     echo "{$user->firstname} {$user->lastname}<br>";
     // }
-    
-   
 });
 
 
 $app->get('/', function () {
     require_once 'index.html';
 });
+
+$app->get('/tickets', function () {
+    require 'template/head.html';
+    require 'tickets.html';
+});
+
+$app->get('/api/tickets', function () use ($app, $response) {
+    header('Content-Type: application/json');
+
+    $tickets = Tickets::find('escalated_to = "19-779"');
+    foreach($tickets as $ticket){
+        $tix_arr = array(
+            $ticket->ticket_no,
+            $ticket->email_subject,
+            $ticket->issue_name,
+            $ticket->category,
+            $ticket->originator,
+            $ticket->severity,
+            $ticket->status,
+            $ticket->escalated_to,
+            $ticket->date_escalated,
+            $ticket->date_closed,
+        );
+        $response['tickets'][] = $tix_arr;
+    }
+
+    echo json_encode($response);
+});
+
+
 
 
 $app->handle();
