@@ -18,7 +18,27 @@ class Users extends Model{
          * param2 : Model
          * param3 : foreign_key
          */
-        $this->hasMany('username','Tickets','escalated_to');
+        
+        // $user->tickets
+        $this->hasMany('username','Tickets','originator',[
+            'alias'=>'tickets'
+        ]);
+
+        $this->hasMany('username','Tickets','escalated_to',[
+            'alias'=>'assigned_tickets'
+        ]);
+
+        $this->hasMany('username', 'Tickets', 'escalated_to', [
+            'reusable'=>true,
+            'alias' => 'open_tickets',
+            'params' => [
+                'conditions' => "status = :status:",
+                'bind'=>[
+                    'status'=>'OPEN'
+                ]
+            ]
+        ]);
+
     }
 
     public function getFullName(){

@@ -8,6 +8,7 @@
 require_once 'models/Users.php';
 require_once 'models/Tickets.php';
 
+
 use Phalcon\Loader;
 use Phalcon\Mvc\Micro;
 
@@ -68,7 +69,7 @@ $app->post('/api/login', function() use ($app) {
         if ($escalated) {
             // If logged in user is an ITD, get all assigned tickets
             echo "Please resolve all this Tickets as soon as Possible. Thank you. <br>";
-            $tickets = $user->tickets;
+            $tickets = $user->open_tickets;
             foreach ($tickets as $ticket) {
                 var_dump($ticket->ticket_no);
                 var_dump($ticket->email_subject);
@@ -103,11 +104,12 @@ $app->post('/api/login', function() use ($app) {
                         
                 </body>	
             </html>";
-            // $tickets = $created->tickets;
-            // foreach ($tickets as $ticket) {
-            //     var_dump($ticket->ticket_no);
-            //     var_dump($ticket->email_subject);
-            // }
+
+            foreach ($user->tickets as $ticket) {
+                var_dump($ticket->ticket_no);
+                var_dump($ticket->email_subject);
+            }
+
         }
     }
     else{
@@ -131,7 +133,7 @@ $app->post('/api/login', function() use ($app) {
 
 
 $app->get('/', function () {
-
+    require_once 'index.html';
 });
 
 
